@@ -23,6 +23,8 @@ namespace blinibot
         public MyBot()
         {
             rand = new Random();
+
+            //Array of blini image names for use with the !blini command
             blinis = new string[]
             {
                 "blinis/blini1.jpg",
@@ -157,6 +159,7 @@ namespace blinibot
 
             commands = _client.GetService<CommandService>();
             
+            //Whenever a message is sent by someone who isn't a bot, catalogue it for use with !phrase. Also avoids fullwidth text because it may have been messing with !phrase
             _client.MessageReceived += (s, e) =>
             {
                 if (!e.Message.IsAuthor && !e.Message.User.IsBot && !((e.Message.Text.Contains("ａ")) || (e.Message.Text.Contains("ｂ")) || (e.Message.Text.Contains("ｃ")) || (e.Message.Text.Contains("ｄ")) || (e.Message.Text.Contains("ｅ")) || (e.Message.Text.Contains("ｆ")) || (e.Message.Text.Contains("ｇ")) || (e.Message.Text.Contains("ｈ")) || (e.Message.Text.Contains("ｉ")) || (e.Message.Text.Contains("ｊ")) || (e.Message.Text.Contains("ｋ")) || (e.Message.Text.Contains("ｌ")) || (e.Message.Text.Contains("ｍ")) || (e.Message.Text.Contains("ｎ")) || (e.Message.Text.Contains("ｏ")) || (e.Message.Text.Contains("ｐ")) || (e.Message.Text.Contains("ｑ")) || (e.Message.Text.Contains("ｒ")) || (e.Message.Text.Contains("ｓ")) || (e.Message.Text.Contains("ｔ")) || (e.Message.Text.Contains("ｕ")) || (e.Message.Text.Contains("ｖ")) || (e.Message.Text.Contains("ｗ")) || (e.Message.Text.Contains("ｘ")) || (e.Message.Text.Contains("ｙ")) || (e.Message.Text.Contains("ｚ")) || (e.Message.Text.Contains("！"))))
@@ -165,23 +168,16 @@ namespace blinibot
                 }
             };
 
-            RegisterHelpCommand();
-
-            RegisterBliniCommand();
-
-            RegisterBanskiGiggleCommand();
-
-            RegisterPurgeCommand();
-
-            RegisterPhraseCommand();
+            RegisterCommands();
 
             _client.ExecuteAndWait(async () =>
             {
-                await _client.Connect("MjkwMzI0MDE4MzU4MTI0NTU2.C6ZW-Q.ZYRiSz6SnWHE-Go4v2YivU-PSJ4", TokenType.Bot);
-                _client.SetGame("Try !blinihelp");
+                await _client.Connect("MzE1MDA5MjgxNzMwNjc0Njg4.DAAirw.cWcnSN2K2aCYqGu7YGlB8H8_RRs", TokenType.Bot);
+                _client.SetGame("try !blinihelp");
             });
         }
 
+        //Send a message describing all the commands
         private void RegisterHelpCommand()
         {
             commands.CreateCommand("blinihelp")
@@ -191,6 +187,7 @@ namespace blinibot
                 });
         }
 
+        //Function to add words in a given message to the dictionary used in !phrase
         private void Catalogue(string fullMessage)
         {
             fullMessage = fullMessage.ToLower();
@@ -233,6 +230,16 @@ namespace blinibot
                     }
                 }
             }
+        }
+
+        //Initializes all the commands
+        private void RegisterCommands()
+        {
+            RegisterHelpCommand();
+            RegisterBliniCommand();
+            RegisterBanskiGiggleCommand();
+            RegisterPurgeCommand();
+            RegisterPhraseCommand();
         }
 
         private void RegisterPhraseCommand()
@@ -290,11 +297,14 @@ namespace blinibot
                 .Parameter("bliniNumber", ParameterType.Optional)
                 .Do(async (e) =>
                 {
+                    //If no number is given, send a random blini
                     if (e.GetArg("bliniNumber").Equals(""))
                         await e.Channel.SendFile(blinis[rand.Next(blinis.Length)]);
+                    //Otherwise send the chosen blini
                     else
                     {
                         int n;
+                        //Check if the argument is a valid number
                         bool isNumeric = int.TryParse(e.GetArg("bliniNumber"), out n);
                         if (!isNumeric)
                             await e.Channel.SendMessage("That's not a number.");
@@ -306,7 +316,7 @@ namespace blinibot
                 });
         }
 
-
+        //Send the image mbg.jpg
         private void RegisterBanskiGiggleCommand()
         {
             commands.CreateCommand("makebanskigiggle")
@@ -316,6 +326,7 @@ namespace blinibot
                 });
         }
 
+        //Delete the last X messages in chat, where X is the given number
         private void RegisterPurgeCommand()
         {
             commands.CreateCommand("purge")
