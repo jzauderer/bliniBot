@@ -162,7 +162,7 @@ namespace blinibot
             //Whenever a message is sent by someone who isn't a bot, catalogue it for use with !phrase. Also avoids fullwidth text because it may have been messing with !phrase
             _client.MessageReceived += (s, e) =>
             {
-                if (!e.Message.IsAuthor && !e.Message.User.IsBot && !((e.Message.Text.Contains("ａ")) || (e.Message.Text.Contains("ｂ")) || (e.Message.Text.Contains("ｃ")) || (e.Message.Text.Contains("ｄ")) || (e.Message.Text.Contains("ｅ")) || (e.Message.Text.Contains("ｆ")) || (e.Message.Text.Contains("ｇ")) || (e.Message.Text.Contains("ｈ")) || (e.Message.Text.Contains("ｉ")) || (e.Message.Text.Contains("ｊ")) || (e.Message.Text.Contains("ｋ")) || (e.Message.Text.Contains("ｌ")) || (e.Message.Text.Contains("ｍ")) || (e.Message.Text.Contains("ｎ")) || (e.Message.Text.Contains("ｏ")) || (e.Message.Text.Contains("ｐ")) || (e.Message.Text.Contains("ｑ")) || (e.Message.Text.Contains("ｒ")) || (e.Message.Text.Contains("ｓ")) || (e.Message.Text.Contains("ｔ")) || (e.Message.Text.Contains("ｕ")) || (e.Message.Text.Contains("ｖ")) || (e.Message.Text.Contains("ｗ")) || (e.Message.Text.Contains("ｘ")) || (e.Message.Text.Contains("ｙ")) || (e.Message.Text.Contains("ｚ")) || (e.Message.Text.Contains("！"))))
+                if (!e.Message.IsAuthor && !e.Message.User.IsBot)
                 {
                     Catalogue(e.Message.Text);
                 }
@@ -196,6 +196,7 @@ namespace blinibot
             var punctuation = fullMessage.Where(Char.IsPunctuation).Distinct().ToArray();
             string[] words = fullMessage.Split().Select(x => x.Trim(punctuation)).ToArray();
 
+            //For multiple words
             if(words.Length > 1)
             {
                 for (int i = 0; i < words.Length; i++)
@@ -230,6 +231,15 @@ namespace blinibot
                     }
                 }
             }
+            //For if we just have to catalogue one word
+            else
+            {
+                //As we're not updating the following words, we just have to check if it already contains the word. If it doesn't, add it. Else, do nothing
+                if(!phraseLibrary.ContainsKey(words[0]))
+                {
+                    phraseLibrary.Add(words[0], new word(words[0]));
+                }
+            }
         }
 
         //Initializes all the commands
@@ -242,6 +252,7 @@ namespace blinibot
             RegisterPhraseCommand();
         }
 
+        //Sends a random phrase based on the words catalogued by Catalogue()
         private void RegisterPhraseCommand()
         {
             commands.CreateCommand("phrase")
@@ -287,6 +298,7 @@ namespace blinibot
                             addMoreWords = false;
                         }
                     }
+                    //Send the message
                     await e.Channel.SendMessage(phraseToSend);
                 });
         }
