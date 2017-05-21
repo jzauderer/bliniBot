@@ -35,12 +35,16 @@ namespace blinibot
                 for (int i = 0; i < words.Length; i++)
                 {
                     //Put it to lowercase unless it's a youtube url
-                    if(words[i].Length > 13)
+                    if(words[i].Length > 11)
                     {
-                        if(words[i].Contains("youtube.com"))
+                        if(!words[i].Contains("youtube.com"))
                         {
                             words[i] = words[i].ToLower();
                         }
+                    }
+                    else
+                    {
+                        words[i] = words[i].ToLower();
                     }
 
                     //Check if the dictionary already contains the word
@@ -76,6 +80,19 @@ namespace blinibot
             //For if we just have to catalogue one word
             else
             {
+                //Put it to lowercase unless it's a youtube url
+                if (words[0].Length > 11)
+                {
+                    if (!words[0].Contains("youtube.com"))
+                    {
+                        words[0] = words[0].ToLower();
+                    }
+                }
+                else
+                {
+                    words[0] = words[0].ToLower();
+                }
+
                 //As we're not updating the following words, we just have to check if it already contains the word. If it doesn't, add it. Else, do nothing
                 if (!phraseLibrary.ContainsKey(words[0]))
                 {

@@ -31,10 +31,10 @@ namespace blinibot
             PhraseCommands phraseCom = new PhraseCommands(_client.GetService<CommandService>());
             InitializeCommands(_client.GetService<CommandService>());
             
-            //Whenever a message is sent by someone who isn't a bot, catalogue it for use with !phrase. Also avoids fullwidth text because it may have been messing with !phrase
+            //Whenever a message is sent by someone who isn't a bot, catalogue it for use with !phrase. Also certain words are blacklisted from being catalogued
             _client.MessageReceived += (s, e) =>
             {
-                if (!e.Message.IsAuthor && !e.Message.User.IsBot)
+                if (!e.Message.User.IsBot && !e.Message.Text.Contains("rule34") && !e.Message.Text.Contains("discordapp"))
                 {
                     phraseCom.Catalogue(e.Message.Text);
                 }
