@@ -35,10 +35,14 @@ namespace blinibot
                 for (int i = 0; i < words.Length; i++)
                 {
                     //Put it to lowercase unless it's a youtube url
-                    if(!words[i].Contains("youtube.com"))
+                    if(words[i].Length > 13)
                     {
-                        words[i] = words[i].ToLower();
+                        if(words[i].Contains("youtube.com"))
+                        {
+                            words[i] = words[i].ToLower();
+                        }
                     }
+
                     //Check if the dictionary already contains the word
                     if (phraseLibrary.ContainsKey(words[i]))
                     {
