@@ -139,7 +139,8 @@ namespace blinibot
                 "blinis/blini113.jpg",
                 "blinis/blini114.jpg",
                 "blinis/blini115.jpg",
-                "blinis/blini116.jpg"
+                "blinis/blini116.jpg",
+                "blinis/blini117.jpg"
             };
         }
 
@@ -168,8 +169,17 @@ namespace blinibot
                         bool isNumeric = int.TryParse(e.GetArg("bliniNumber"), out n);
                         if (!isNumeric)
                             await e.Channel.SendMessage("That's not a number.");
-                        else if (n > blinis.Length || n <= 0)
+                        else if (n > blinis.Length || n < -1)
                             await e.Channel.SendMessage("There's no blini of that number! There are currently " + blinis.Length.ToString() + " blinis.");
+                        else if(n == 0)
+                        {
+                            if (rand.Next(2) == 1)
+                                await e.Channel.SendFile("blinis/bliniDream1.jpg");
+                            else
+                                await e.Channel.SendFile("blinis/bliniDream2.jpg");
+                        }
+                        else if (n == -1)
+                            await e.Channel.SendFile("blinis/bliniGlitch.gif");
                         else
                             await e.Channel.SendFile(blinis[n - 1]);
                     }

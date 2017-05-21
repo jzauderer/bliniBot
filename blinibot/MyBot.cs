@@ -42,7 +42,7 @@ namespace blinibot
 
             _client.ExecuteAndWait(async () =>
             {
-                await _client.Connect("MzE1MDA5MjgxNzMwNjc0Njg4.DAAirw.cWcnSN2K2aCYqGu7YGlB8H8_RRs", TokenType.Bot);
+                await _client.Connect("MjkwMzI0MDE4MzU4MTI0NTU2.DAKMtg.MG4HULYRKi3uK5z8RLEAj0xrxNY", TokenType.Bot);
                 _client.SetGame("try !blinihelp");
             });
         }
