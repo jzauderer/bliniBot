@@ -31,7 +31,7 @@ namespace blinibot
             _following.Add(following);
         }
 
-        //Adds a word to list of words that can follow
+        //Adds a string to list of words that can follow
         public void addFollowing(string following)
         {
             _following.Add(following);
@@ -46,8 +46,7 @@ namespace blinibot
             }
             else
             {
-                int r = rand.Next(_following.Count);
-                return _following[r];
+                return _following[rand.Next(_following.Count)];
             }
         }
 
