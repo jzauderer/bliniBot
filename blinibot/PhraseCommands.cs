@@ -4,6 +4,7 @@ using Discord.Commands;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -29,24 +30,24 @@ namespace blinibot
             var punctuation = fullMessage.Where(Char.IsPunctuation).Distinct().ToArray();
             string[] words = fullMessage.Split().Select(x => x.Trim(punctuation)).ToArray();
 
+            //Put the first word to lowercase unless it's a youtube url
+            if (words[0].Length > 11)
+            {
+                if (!words[0].Contains("youtube.com"))
+                {
+                    words[0] = words[0].ToLower();
+                }
+            }
+            else
+            {
+                words[0] = words[0].ToLower();
+            }
+
             //For multiple words
             if (words.Length > 1)
             {
                 for (int i = 0; i < words.Length; i++)
                 {
-                    //Put it to lowercase unless it's a youtube url
-                    if(words[i].Length > 11)
-                    {
-                        if(!words[i].Contains("youtube.com"))
-                        {
-                            words[i] = words[i].ToLower();
-                        }
-                    }
-                    else
-                    {
-                        words[i] = words[i].ToLower();
-                    }
-
                     //Check if the dictionary already contains the word
                     if (phraseLibrary.ContainsKey(words[i]))
                     {
@@ -60,6 +61,18 @@ namespace blinibot
                             //If it does not already have the word following it, add it
                             if (!addedWord.getFollowingWords().Contains(words[i + 1]))
                             {
+                                //Put the next word to lowercase unless it's a youtube url
+                                if (words[i + 1].Length > 11)
+                                {
+                                    if (!words[i + 1].Contains("youtube.com"))
+                                    {
+                                        words[i + 1] = words[i + 1].ToLower();
+                                    }
+                                }
+                                else
+                                {
+                                    words[i + 1] = words[i + 1].ToLower();
+                                }
                                 addedWord.addFollowing(words[i + 1]);
                                 phraseLibrary[words[i]] = addedWord;
                             }
@@ -80,19 +93,6 @@ namespace blinibot
             //For if we just have to catalogue one word
             else
             {
-                //Put it to lowercase unless it's a youtube url
-                if (words[0].Length > 11)
-                {
-                    if (!words[0].Contains("youtube.com"))
-                    {
-                        words[0] = words[0].ToLower();
-                    }
-                }
-                else
-                {
-                    words[0] = words[0].ToLower();
-                }
-
                 //As we're not updating the following words, we just have to check if it already contains the word. If it doesn't, add it. Else, do nothing
                 if (!phraseLibrary.ContainsKey(words[0]))
                 {
@@ -103,8 +103,8 @@ namespace blinibot
 
         private void RegisterCommands(CommandService cmd)
         {
-            //Sends a random phrase based on the words catalogued by Catalogue()
             cmd.CreateCommand("phrase")
+                .Description("Sends a random phrase based on the words catalogued by Catalogue()")
                 .Do(async (e) =>
                 {
                     //Initialize an empty string where the message will be stored
@@ -150,6 +150,71 @@ namespace blinibot
                     //Send the message
                     await e.Channel.SendMessage(phraseToSend);
                 });
+            
+            cmd.CreateCommand("following")
+                .Description("Sends all the words that can follow the given word")
+                .Parameter("wordToCheck", ParameterType.Required)
+                .Do(async (e) =>
+                {
+                    //Checks if the given word is in the phraseLibrary to begin with
+                    if (phraseLibrary.ContainsKey(e.GetArg("wordToCheck")))
+                    {
+                        //Saves the word we have to check to a variable so we don't have to keep doing GetArg()
+                        string checkWord = e.GetArg("wordToCheck");
+                        if(phraseLibrary[checkWord].getFollowingWords().Count() == 0)
+                        {
+                            await e.Channel.SendMessage("This word is in the library but it has no words that follow it");
+                        }
+                        //Only one word can 
+                        else if (phraseLibrary[checkWord].getFollowingWords().Count() == 1)
+                        {
+                            await e.Channel.SendMessage("Words that can follow " + checkWord + ": " + phraseLibrary[checkWord].getRandomFollowing());
+                        }
+                        else
+                        {
+                            //Start the string that will be our final message
+                            string messageToSend = "Words that can follow " + checkWord + ": ";
+                            List<string> following = phraseLibrary[checkWord].getFollowingWords();
+                            messageToSend += following[0];
+                            for (int i = 1; i < following.Count(); i++)
+                            {
+                                messageToSend += ", " + following[i];
+                            }
+                            await e.Channel.SendMessage(messageToSend);
+                        }
+                    }
+                    //Realistically this should never come up, as it should be entered into the phraseLibrary when this command is called unless it's a blacklisted word
+                    else
+                    {
+                        await e.Channel.SendMessage("This word is not stored");
+                    }
+                });
+
+            //WIP saving and loading
+
+            /*
+            cmd.CreateCommand("save")
+                .Description("Writes the phraseLibrary dictionary to a file so that it can be loaded later")
+                .Do(async (e) =>
+                {
+                    //Only I (chainsauce) can use this command
+                    if(e.User.Id.ToString().Equals("189798240923680768"))
+                    {
+                        await e.Channel.SendMessage("Saved phrase library to file!");
+                    }
+                });
+            
+            cmd.CreateCommand("load")
+                .Description("Loads the phraseLibrary dictionary from a file")
+                .Do(async (e) =>
+                {
+                    //Only I (chainsauce) can use this command
+                    if (e.User.Id.ToString().Equals("189798240923680768"))
+                    {
+                        await e.Channel.SendMessage("Loaded phrase library from file!");
+                    }
+                });
+                */
         }
     }
 }

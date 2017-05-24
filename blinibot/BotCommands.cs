@@ -146,15 +146,15 @@ namespace blinibot
 
         private void RegisterCommands(CommandService cmd)
         {
-            //Send a message describing all the commands
             cmd.CreateCommand("blinihelp")
+                .Description("Send a message describing all the commands")
                 .Do(async (e) =>
                 {
                     await e.Channel.SendMessage("Commands: \n \n !blini [optional number]: Posts a blini. The blini will be random if no number is given. The filename for each posted blini contains what number it is. \n \n !purge [required number]: Deletes the last x messages, where x is the given number. \n \n !phrase: Sends a random message based on what this bot hears.");
                 });
             
-            //Sends a random image of blini (the cat)
             cmd.CreateCommand("blini")
+                .Description("Sends a random image of blini (the cat)")
                 .Parameter("bliniNumber", ParameterType.Optional)
                 .Do(async (e) =>
                 {
@@ -184,16 +184,16 @@ namespace blinibot
                             await e.Channel.SendFile(blinis[n - 1]);
                     }
                 });
-
-            //Send the image mbg.jpg
+            
             cmd.CreateCommand("makebanskigiggle")
+                .Description("Send the image mbg.jpg")
                 .Do(async (e) =>
                 {
                     await e.Channel.SendFile("miscimages/mbg.jpg");
                 });
-
-            //Delete the last X messages in chat, where X is the given number
+            
             cmd.CreateCommand("purge")
+                .Description("Delete the last X messages in chat, where X is the given number")
                 .Parameter("numberToDelete", ParameterType.Required)
                 .Do(async (e) =>
                 {
