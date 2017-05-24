@@ -150,7 +150,7 @@ namespace blinibot
                 .Description("Send a message describing all the commands")
                 .Do(async (e) =>
                 {
-                    await e.Channel.SendMessage("Commands: \n \n !blini [optional number]: Posts a blini. The blini will be random if no number is given. The filename for each posted blini contains what number it is. \n \n !purge [required number]: Deletes the last x messages, where x is the given number. \n \n !phrase: Sends a random message based on what this bot hears.");
+                    await e.Channel.SendMessage("Commands: \n \n !blini [optional number]: Posts a blini. The blini will be random if no number is given. The filename for each posted blini contains what number it is. \n \n !purge [required number]: Deletes the last x messages, where x is the given number. \n \n !phrase [optional word]: Sends a random message based on what this bot hears. If you give it a word, it will start it's phrase with that word.");
                 });
             
             cmd.CreateCommand("blini")

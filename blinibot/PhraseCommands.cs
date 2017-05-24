@@ -105,14 +105,36 @@ namespace blinibot
         {
             cmd.CreateCommand("phrase")
                 .Description("Sends a random phrase based on the words catalogued by Catalogue()")
+                .Parameter("startingWord", ParameterType.Optional)
                 .Do(async (e) =>
                 {
                     //Initialize an empty string where the message will be stored
                     string phraseToSend = "";
-                    //Create list of keys
-                    List<string> keyList = phraseLibrary.Keys.ToList();
-                    //Randomly pick a key from the list to be our first word
-                    string startingPhrase = keyList[rand.Next(keyList.Count)];
+                    string startingPhrase = "";
+
+                    //See if we're given an argument. If so, choose a random starting word. If not, start from the given word
+                    if (e.GetArg("startingWord").Equals(""))
+                    {
+                        //Create list of keys to randomly select from
+                        List<string> keyList = phraseLibrary.Keys.ToList();
+                        //If given no arguments, randomly pick a key from the list to be our first word
+                        startingPhrase = keyList[rand.Next(keyList.Count)];
+                    }
+                    else
+                    {
+                        //Check if the phraseLibrary contains the given word
+                        if(phraseLibrary.ContainsKey(e.GetArg("startingWord")))
+                        {
+                            startingPhrase = phraseLibrary[e.GetArg("startingWord")].getText();
+                        }
+                        //If not, return an error
+                        else
+                        {
+                            await e.Channel.SendMessage("That word isn't in my database.");
+                            return;
+                        }
+                    }
+
                     //Adds the first word to the phrase
                     phraseToSend += phraseLibrary[startingPhrase].getText();
                     //await e.Channel.SendMessage("Tracing phrase: The current phrase is \"" + phraseToSend + "\"");
