@@ -111,9 +111,10 @@ namespace blinibot
                     //Initialize an empty string where the message will be stored
                     string phraseToSend = "";
                     string startingPhrase = "";
+                    string argWord = e.GetArg("startingWord").ToLower();
 
                     //See if we're given an argument. If so, choose a random starting word. If not, start from the given word
-                    if (e.GetArg("startingWord").Equals(""))
+                    if (argWord.Equals(""))
                     {
                         //Create list of keys to randomly select from
                         List<string> keyList = phraseLibrary.Keys.ToList();
@@ -123,9 +124,9 @@ namespace blinibot
                     else
                     {
                         //Check if the phraseLibrary contains the given word
-                        if(phraseLibrary.ContainsKey(e.GetArg("startingWord")))
+                        if(phraseLibrary.ContainsKey(argWord))
                         {
-                            startingPhrase = phraseLibrary[e.GetArg("startingWord")].getText();
+                            startingPhrase = phraseLibrary[argWord].getText();
                         }
                         //If not, return an error
                         else

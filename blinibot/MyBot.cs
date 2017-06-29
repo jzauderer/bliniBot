@@ -31,7 +31,7 @@ namespace blinibot
             PhraseCommands phraseCom = new PhraseCommands(_client.GetService<CommandService>());
             InitializeCommands(_client.GetService<CommandService>());
             
-            //Whenever a message is sent by someone who isn't a bot, catalogue it for use with !phrase. Also certain words are blacklisted from being catalogued
+            //Whenever a message is sent by someone who isn't a bot, catalogue it for use with !phrase. Certain words and messages from bots are blacklisted from being catalogued
             _client.MessageReceived += (s, e) =>
             {
                 if (!e.Message.User.IsBot && !e.Message.Text.Contains("rule34") && !e.Message.Text.Contains("discordapp"))
@@ -42,7 +42,7 @@ namespace blinibot
 
             _client.ExecuteAndWait(async () =>
             {
-                await _client.Connect("MzE1MDA5MjgxNzMwNjc0Njg4.DAAirw.cWcnSN2K2aCYqGu7YGlB8H8_RRs", TokenType.Bot);
+                await _client.Connect("MjkwMzI0MDE4MzU4MTI0NTU2.DDaqWQ.ruQmg3Cymih23fqbK8oXXFx-POM", TokenType.Bot);
                 _client.SetGame("try !blinihelp");
             });
         }
