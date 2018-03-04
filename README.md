@@ -1,4 +1,7 @@
 # bliniBot
+
+**NOTE: After an update to the discord.net api, this bot no longer works**
+
 Discord bot with multiple features for both fun and administration
 * [Command List](https://github.com/jzauderer/bliniBot/wiki/Command-List)
 
